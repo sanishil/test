@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pdfApp">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Save as PDF</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous">
+
+        <!-- AngularJS -->
+        <script
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+        <!-- HTML to PDF Converter -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+        <style>
+        body {
+            font-family: 'Times New Roman', Times, serif !important;
+            background-color: #edf5f5;
+        }
+        .a4-page {
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            max-height: 297mm; /* Prevent content overflow */
+            padding: 20mm; /* Adjust padding */
+            box-sizing: border-box;
+            background-color: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Prevents content from overflowing to another page */
+            text-align: center;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .sub-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .content {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .college-logo {
+            width: 150px;
+            height: auto;
+            margin: 20px auto;
+        }
+    </style>
+    </head>
+    <body ng-controller="PdfController">
+
+        <div class="row">
+            <div class="row" style="padding-top: 10px;">
+                <div class="col-lg-12 text-center text-danger" style="font-size: 24px;">
+                    Ensure that you save it on your mobile; otherwise, it will
+                    not work.
+                </div>
+            </div>
+            <div class="col-lg-12">
+
+                <div class="container mt-4">
+                    <div class="a4-page" id="contentToPrint">
+                        <div class="text-center">
+                            <div
+                                style="font-size: 24px;"><b>Assignment</b></div>
+                            <div class="mb-4" style="font-size: 35px;"><b>Techno
+                                    College of Engineering Agartala</b></div>
+                            <div class="content"
+                                style="font-size: 19px;"><b>Course Title:</b>
+                                Database Management System Lab</div>
+                            <div class="content"
+                                style="font-size: 19px;"><b>Course Code:</b> PC
+                                CS 508</div>
+                            <img src="img/final_tcea.jpg" alt="College Logo"
+                                class="college-logo"> <br><br>
+
+                            <div class="content"
+                                style="font-size: 19px;"><b><u>Submitted
+                                        to</u></b></div>
+                            <div style="font-size: 16px;"><b>Mr. Deeptanu
+                                    Choudhury</b></div>
+                            <div style="font-size: 16px;">Assistant Professor
+                            </div>
+                            <div style="font-size: 16px;">Department of Computer
+                                Science & Engineering </div>
+                            <div style="font-size: 16px;">Techno College of
+                                Engineering Agartala</div><br><br><br><br>
+
+                            <div class="content"
+                                style="font-size: 19px;"><b><u>Submitted
+                                        by</u></b></div>
+                            <div style="font-size: 16px;"><b>Mr. Sani
+                                    Shil</b></div>
+                            <div style="font-size: 16px;">Student ID.:
+                                226709003</div>
+                            <div style="font-size: 16px;">TU Roll No.:
+                                226709003</div>
+                            <div style="font-size: 16px;">Department of Computer
+                                Science & Engineering </div>
+                            <div style="font-size: 16px;">Semester: 5th</div>
+                            <br><br>
+
+                            <div style="font-size: 16px;"><b>Date of Submission
+                                    - 27/11/2024</b></div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary"
+                            ng-click="saveAsPdf()">Save as PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        var app = angular.module('pdfApp', []);
+
+        app.controller('PdfController', ['$scope', function($scope) {
+            $scope.saveAsPdf = function() {
+                const element = document.getElementById('contentToPrint');
+
+                const options = {
+                    margin: [10, 10, 10, 10], // Top, Left, Bottom, Right margins in mm
+                    filename: 'assignment.pdf',
+                    image: { type: 'jpeg', quality: 1.0 },
+                    html2canvas: { 
+                        scale: 2,  // Higher scale for better quality
+                        useCORS: true, // Prevents font & image issues
+                        allowTaint: true,
+                        logging: false
+                    },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'portrait' 
+                    }
+                };
+
+                html2pdf()
+                    .from(element)
+                    .set(options)
+                    .toPdf()
+                    .get('pdf')
+                    .then(function(pdf) {
+                        pdf.setFont("times"); // Ensures Times New Roman is used
+                        pdf.save();
+                    });
+            };
+        }]);
+    </script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    </body>
+</html>
